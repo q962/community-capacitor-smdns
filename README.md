@@ -1,4 +1,4 @@
-# capacitor-community-q962-smdns
+# capacitor-community-smdns
 
 simple mdns
 
@@ -13,7 +13,7 @@ My suggestion is to use the server name to pass the information.
 ## Install
 
 ```bash
-npm install capacitor-community-q962-smdns
+npm install capacitor-community-smdns
 npx cap sync
 ```
 
