@@ -40,13 +40,13 @@ if (Capacitor.isPluginAvailable('smdns')) {
 ### discoverServices(...)
 
 ```typescript
-discoverServices(type: string, cb: DiscoverServicesCb) => void
+discoverServices(type: string, cb: DiscoverServicesNotify) => void
 ```
 
-| Param      | Type                                                              |
-| ---------- | ----------------------------------------------------------------- |
-| **`type`** | <code>string</code>                                               |
-| **`cb`**   | <code><a href="#discoverservicescb">DiscoverServicesCb</a></code> |
+| Param      | Type                                                                      |
+| ---------- | ------------------------------------------------------------------------- |
+| **`type`** | <code>string</code>                                                       |
+| **`cb`**   | <code><a href="#discoverservicesnotify">DiscoverServicesNotify</a></code> |
 
 --------------------
 
@@ -54,7 +54,7 @@ discoverServices(type: string, cb: DiscoverServicesCb) => void
 ### Type Aliases
 
 
-#### DiscoverServicesCb
+#### DiscoverServicesNotify
 
 <code>{ onServiceFound?: (name: string, host?: string, port?: number) =&gt; void; onServiceLost?: (name: string, host?: string, port?: number) =&gt; void; }</code>
 
