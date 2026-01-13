@@ -4,17 +4,25 @@ simple mdns
 
 Currently only works on android.
 
-## Hint
-
-You may not be able to get the host and port. It is not clear to me what is going on.
-
-My suggestion is to use the server name to pass the information.
-
 ## Install
 
 ```bash
 npm install capacitor-community-smdns
 npx cap sync
+```
+
+## Example
+
+```ts
+import { smdns } from 'capacitor-community-smdns'
+
+if (Capacitor.isPluginAvailable('smdns')) {
+  smdns.discoverServices('_http._tcp', {
+    onServiceFound: (name, host, port) => {
+      console.log(name, host, port)
+    }
+  })
+}
 ```
 
 ## API
