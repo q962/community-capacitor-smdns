@@ -1,6 +1,6 @@
 {
   "name": "capacitor-community-smdns",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "simple mdns",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
