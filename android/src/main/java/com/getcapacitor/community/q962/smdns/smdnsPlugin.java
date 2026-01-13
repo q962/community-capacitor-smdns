@@ -13,6 +13,13 @@ import android.content.Context;
 @CapacitorPlugin(name = "smdns")
 public class smdnsPlugin extends Plugin {
 
+    private NsdManager nsdManager;
+
+    @Override
+    public void load() {
+         nsdManager = (NsdManager) getContext().getSystemService(Context.NSD_SERVICE);
+    }
+
     @PluginMethod(returnType = PluginMethod.RETURN_CALLBACK)
     public void discoverServices(PluginCall call) {
 
@@ -29,8 +36,7 @@ public class smdnsPlugin extends Plugin {
         try {
             call.setKeepAlive(true);
 
-            NsdManager mNsdManager = (NsdManager) getContext().getSystemService(Context.NSD_SERVICE);
-            mNsdManager.discoverServices(type, NsdManager.PROTOCOL_DNS_SD, new NsdManager.DiscoveryListener() {
+            nsdManager.discoverServices(type, NsdManager.PROTOCOL_DNS_SD, new NsdManager.DiscoveryListener() {
 
                 @Override
                 public void onStartDiscoveryFailed(String var1, int var2) {
@@ -50,20 +56,33 @@ public class smdnsPlugin extends Plugin {
 
                 @Override
                 public void onServiceFound(NsdServiceInfo service) {
-                    JSObject ret = new JSObject();
-                    ret.put("onServiceFound", new JSObject().put("name", service.getServiceName()).put("host", service.getHost()).put("port", service.getPort()));
 
-                    call.resolve(ret);
+                    nsdManager.resolveService(service, new NsdManager.ResolveListener(){
+                        @Override
+                        public void onResolveFailed(NsdServiceInfo serviceInfo, int errorCode) {
+
+                        }
+
+                        @Override
+                        public void onServiceResolved(NsdServiceInfo serviceInfo) {
+                            JSObject ret = new JSObject();
+                            ret.put("onServiceFound", new JSObject().put("name", serviceInfo.getServiceName())
+                                    .put("host", serviceInfo.getHost().getHostAddress()).put("port", serviceInfo.getPort()));
+
+                            call.resolve(ret);
+                        }
+                    });
                 }
 
                 @Override
                 public void onServiceLost(NsdServiceInfo service) {
                     JSObject ret = new JSObject();
-                    ret.put("onServiceLost", new JSObject().put("name", service.getServiceName()).put("host", service.getHost()).put("port", service.getPort()));
-
+                    ret.put("onServiceLost", new JSObject().put("name", service.getServiceName())
+                            .put("host", service.getHost()).put("port", service.getPort()));
                     call.resolve(ret);
                 }
             });
+
         } catch (Exception e) {
             call.setKeepAlive(false);
 
@@ -72,5 +91,4 @@ public class smdnsPlugin extends Plugin {
             call.resolve(ret);
         }
     }
-
 }

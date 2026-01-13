@@ -32,15 +32,13 @@ npx cap sync
 ### discoverServices(...)
 
 ```typescript
-discoverServices(type: string, cb: DiscoverServicesCbArgs) => Promise<CallbackId>
+discoverServices(type: string, cb: DiscoverServicesCb) => void
 ```
 
-| Param      | Type                                                                      |
-| ---------- | ------------------------------------------------------------------------- |
-| **`type`** | <code>string</code>                                                       |
-| **`cb`**   | <code><a href="#discoverservicescbargs">DiscoverServicesCbArgs</a></code> |
-
-**Returns:** <code>Promise&lt;string&gt;</code>
+| Param      | Type                                                              |
+| ---------- | ----------------------------------------------------------------- |
+| **`type`** | <code>string</code>                                               |
+| **`cb`**   | <code><a href="#discoverservicescb">DiscoverServicesCb</a></code> |
 
 --------------------
 
@@ -48,13 +46,8 @@ discoverServices(type: string, cb: DiscoverServicesCbArgs) => Promise<CallbackId
 ### Type Aliases
 
 
-#### DiscoverServicesCbArgs
+#### DiscoverServicesCb
 
 <code>{ onServiceFound?: (name: string, host?: string, port?: number) =&gt; void; onServiceLost?: (name: string, host?: string, port?: number) =&gt; void; }</code>
-
-
-#### CallbackId
-
-<code>string</code>
 
 </docgen-api>

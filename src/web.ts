@@ -1,10 +1,6 @@
 import { WebPlugin, registerPlugin } from '@capacitor/core';
 
-import type {
-  CallbackId,
-  smdnsPluginWrapper,
-  DiscoverServicesCbArgs,
-} from './definitions';
+import type { smdnsPlugin, DiscoverServicesNotify } from './definitions';
 
 type DiscoverServicesArgType = {
   onServiceFound?: {
@@ -19,55 +15,41 @@ type DiscoverServicesArgType = {
   };
 };
 
-export interface smdnsPlugin {
+class smdnsWebPlugin extends WebPlugin {
   discoverServices(
-    opt: { type: string },
-    cb: (arg: DiscoverServicesArgType) => void,
-  ): Promise<CallbackId>;
-}
-
-class smdnsWeb extends WebPlugin implements smdnsPlugin {
-  async discoverServices(
-    opt: { type: string },
-    cb: (arg: DiscoverServicesArgType) => void,
-  ): Promise<CallbackId> {
-    void opt, cb;
-    return '';
+    options: { type: string },
+    cb: (result: DiscoverServicesNotify) => void,
+  ) {
+    void options, cb;
   }
 }
 
-class Wrapper implements smdnsPluginWrapper {
-  smdns: smdnsPlugin = registerPlugin<smdnsPlugin>('smdns', {
-    web: () => new smdnsWeb(),
-  });
+const smdns = registerPlugin<smdnsWebPlugin>('smdns', {
+  web: () => new smdnsWebPlugin(),
+});
 
-  async discoverServices(
-    type: string,
-    cb: DiscoverServicesCbArgs,
-  ): Promise<CallbackId> {
-    return this.smdns.discoverServices(
-      { type },
-      (arg: DiscoverServicesArgType) => {
-        if (cb.onServiceFound && arg.onServiceFound) {
-          cb.onServiceFound(
-            arg.onServiceFound.name,
-            arg.onServiceFound.host,
-            arg.onServiceFound.port,
-          );
-          return;
-        }
+class smdnsWeb implements smdnsPlugin {
+  async discoverServices(type: string, cb: DiscoverServicesNotify) {
+    return smdns.discoverServices({ type }, (arg: DiscoverServicesArgType) => {
+      if (cb.onServiceFound && arg.onServiceFound) {
+        cb.onServiceFound(
+          arg.onServiceFound.name,
+          arg.onServiceFound.host,
+          arg.onServiceFound.port,
+        );
+        return;
+      }
 
-        if (cb.onServiceLost && arg.onServiceLost) {
-          cb.onServiceLost(
-            arg.onServiceLost.name,
-            arg.onServiceLost.host,
-            arg.onServiceLost.port,
-          );
-          return;
-        }
-      },
-    );
+      if (cb.onServiceLost && arg.onServiceLost) {
+        cb.onServiceLost(
+          arg.onServiceLost.name,
+          arg.onServiceLost.host,
+          arg.onServiceLost.port,
+        );
+        return;
+      }
+    });
   }
 }
 
-export default new Wrapper();
+export default new smdnsWeb();
